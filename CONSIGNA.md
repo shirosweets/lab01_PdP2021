@@ -1,3 +1,4 @@
+
 ---
 title: Lab de Programación Funcional
 author: Cátedra de Paradigmas
@@ -406,6 +407,7 @@ Si tenés algún Linux debería ser suficiente con que instales el paquete de gh
 y cabal. Para instalar gloss usamos cabal:
 
 ```
+$ sudo apt-get install cabal-install
 $ cabal update
 $ cabal install gloss
 ```
