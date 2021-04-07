@@ -213,7 +213,7 @@ bool_all_1 x = x
 bool_all_2 :: Int -> Int -> Bool -> Bool -> Bool
 bool_all_2 _ _ x y = x && y
 
-bool_any_3 :: Bool -> Bool -> Bool
+bool_all_3 :: Bool -> Bool -> Bool
 bool_all_3 x y = x && y
 
 -- Los dos predicados se cumplen para el elemento recibido.
@@ -221,12 +221,12 @@ bool_all_3 x y = x && y
 -- Pues supuestamente es lo mismo que andP :: Pred a -> Pred a -> (a -> Bool)
 -- Entonces algo como la implementacion de abajo estaria en lo correcto?
 -- FIXME Revisar andP y orP 
-andP :: Pred a -> Pred a -> Pred a
-andP p1 p2 = p1 && p2
+--andP :: Pred a -> Pred a -> Pred a
+--andP p1 p2 = p1 && p2
 
 -- Algún predicado se cumple para el elemento recibido.
-orP :: Pred a -> Pred a -> Pred a
-orP p1 p2 = p1 || p2
+--orP :: Pred a -> Pred a -> Pred a
+--orP p1 p2 = p1 || p2
 
 -- Describe la figura. Ejemplos: 
 --   desc (const "b") (Basica b) = "b"
@@ -239,25 +239,32 @@ orP p1 p2 = p1 || p2
 --NOTE Deberia usar la f? Investigar como usar strings en haskell
 
 desc :: (a -> String) -> Dibujo a -> String
-desc f a = sem descBas descRot90 descRot45 descEsp descApi descJun descEnc a  
+desc _ a = sem descBas descRot90 descRot45 descEsp descApi descJun descEnc a  
 
---descBas
+descBas :: a -> String
+descBas a = "a"
 
---descRot90
+descRot90 :: String -> String
+descRot90 a = "rot" ++ "(" ++ a ++ ")"
 
---descRot45
+descRot45 :: String -> String
+descRot45 a = "rot45" ++ "(" ++ a ++ ")"
 
---descEsp
+descEsp :: String -> String
+descEsp a = "esp" ++ "(" ++ a ++ ")"
 
---descApi
+descApi :: Int -> Int -> String -> String -> String
+descApi x y a b = "api" ++ "x" ++ "y" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 
---descJun
+descJun :: Int -> Int -> String -> String -> String
+descJun x y a b = "jun" ++ "x" ++ "y" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 
---descEnc
+descEnc :: String -> String -> String
+descEnc a b = "enc" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 
 
 -- Junta todas las Dibujos básicas de un dibujo.
-basicas :: Dibujo a -> [a]
+--basicas :: Dibujo a -> [a]
 
 -- ! TODO Definir los siguientes predicados (pueden hacer pattern-matching).
 -- !  Estos predicados indican una superfluocidad de operaciones (es
