@@ -26,7 +26,7 @@ module Dibujo where
 -- _a_ indica el despejarlazamiento del origen, _b_ el ancho y _c_ el alto.
 
 -- Definir el lenguaje como un tipo de datos: como no sabemos a priori qué
--- Dibujos básicas tendremos, nuestro tipo de Dibujos debe ser _polimórfico_.
+-- Figuras básicas tendremos, nuestro tipo de Dibujos debe ser _polimórfico_.
 
 data Dibujo a = Vacia | Basica a | Rot90 (Dibujo a) | Espejar (Dibujo a) | Rot45 (Dibujo a)
               | Apilar Int Int (Dibujo a) (Dibujo a)
@@ -217,16 +217,16 @@ bool_all_3 :: Bool -> Bool -> Bool
 bool_all_3 x y = x && y
 
 -- Los dos predicados se cumplen para el elemento recibido.
---NOTE Entender como funciona esta funcion
+-- NOTE Entender como funciona esta funcion
 -- Pues supuestamente es lo mismo que andP :: Pred a -> Pred a -> (a -> Bool)
 -- Entonces algo como la implementacion de abajo estaria en lo correcto?
--- FIXME Revisar andP y orP 
---andP :: Pred a -> Pred a -> Pred a
---andP p1 p2 = p1 && p2
+
+andP :: Pred a -> Pred a -> Pred a
+andP p1 p2 x = p1 x && p2 x
 
 -- Algún predicado se cumple para el elemento recibido.
---orP :: Pred a -> Pred a -> Pred a
---orP p1 p2 = p1 || p2
+orP :: Pred a -> Pred a -> Pred a
+orP p1 p2 x = p1 x || p2 x
 
 -- Describe la figura. Ejemplos: 
 --   desc (const "b") (Basica b) = "b"
@@ -239,7 +239,8 @@ bool_all_3 x y = x && y
 --NOTE Deberia usar la f? Investigar como usar strings en haskell
 
 desc :: (a -> String) -> Dibujo a -> String
-desc _ a = sem descBas descRot90 descRot45 descEsp descApi descJun descEnc a  
+desc f a = sem f descRot90 descRot45 descEsp descApi descJun descEnc a
+-- desc _ a = sem descBas descRot90 descRot45 descEsp descApi descJun descEnc a  
 
 descBas :: a -> String
 descBas a = "a"
@@ -263,24 +264,35 @@ descEnc :: String -> String -> String
 descEnc a b = "enc" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 
 
--- Junta todas las Dibujos básicas de un dibujo.
---basicas :: Dibujo a -> [a]
+-- Junta todas las Figuras básicas de un dibujo.
+-- basicas :: Dibujo a -> [a]
+-- basicas a = case a == "HOLA"
 
 -- ! TODO Definir los siguientes predicados (pueden hacer pattern-matching).
 -- !  Estos predicados indican una superfluocidad de operaciones (es
 -- !  decir, cambian para no cambiar nada).
 
--- Hay 4 rotaciones seguidas.
---esRot360 :: Pred (Dibujo a)
+-- type Pred a = a -> Bool
 
--- Hay 2 espejarejados seguidos.
+-- Hay 4 rotaciones seguidas.
+-- esRot360 :: Pred (Dibujo a)
+-- esRot360 p x ==  (Basica a)
+-- esRot360 p (Rot90 a)
+-- esRot360 p (Rot45 a)
+-- esRot360 p (Espejar a)
+-- esRot360 p (Apilar x y a b)
+-- esRot360 p (Juntar x y a b)
+-- esRot360 p (Encimar a b)
+
+-- Hay 2 espejados seguidos.
 --esFlip2 :: Pred (Dibujo a)
 
 -- ! TODO Definición de función que aplica un predicado y devuelve 
 -- !  un error indicando fallo o una figura si no hay tal fallo.
 
---data Superfluo = RotacionSuperflua | FlipSuperfluo
+data Superfluo = RotacionSuperflua | FlipSuperfluo
 
 -- Aplica todos los chequeos y acumula todos los errores, y
 -- sólo devuelve la figura si no hubo ningún error.
---check :: Dibujo a -> Either [Superfluo] (Dibujo a) 
+-- check :: Dibujo a -> Either [Superfluo] (Dibujo a)
+-- check a Either s a
