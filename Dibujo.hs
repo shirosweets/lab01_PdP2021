@@ -240,7 +240,6 @@ orP p1 p2 x = p1 x || p2 x
 
 desc :: (a -> String) -> Dibujo a -> String
 desc f a = sem f descRot90 descRot45 descEsp descApi descJun descEnc a
--- desc _ a = sem descBas descRot90 descRot45 descEsp descApi descJun descEnc a  
 
 descBas :: a -> String
 descBas a = "a"
@@ -272,20 +271,17 @@ descEnc a b = "enc" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 -- !  Estos predicados indican una superfluocidad de operaciones (es
 -- !  decir, cambian para no cambiar nada).
 
--- type Pred a = a -> Bool
-
--- Hay 4 rotaciones seguidas.
--- esRot360 :: Pred (Dibujo a)
--- esRot360 p x ==  (Basica a)
--- esRot360 p (Rot90 a)
--- esRot360 p (Rot45 a)
--- esRot360 p (Espejar a)
--- esRot360 p (Apilar x y a b)
--- esRot360 p (Juntar x y a b)
--- esRot360 p (Encimar a b)
+-- Hay 4 rotaciones seguidas. Dibujo (a) -> Bool
+esRot360 :: Pred (Dibujo a)
+esRot360 (Rot90(Rot90(Rot90(Rot90 a)))) = True
+esRot360 (Rot45(Rot45(Rot45(Rot45(Rot45(Rot45(Rot45(Rot45 a)))))))) = True
+esRot360 otherwise = False
 
 -- Hay 2 espejados seguidos.
---esFlip2 :: Pred (Dibujo a)
+esFlip2 :: Pred (Dibujo a)
+esFlip2 (Espejar(Espejar a)) = True
+esFlip2 otherwise = False
+
 
 -- ! TODO Definición de función que aplica un predicado y devuelve 
 -- !  un error indicando fallo o una figura si no hay tal fallo.
