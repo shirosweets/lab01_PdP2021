@@ -4,6 +4,18 @@ import Dibujo
 bas1 :: Dibujo Int
 bas1 = Basica 1
 
+bas2 :: Dibujo Int
+bas2 = Basica 2
+
+bas3 :: Dibujo Int
+bas3 = Rot90(Rot90(Rot90(Rot90 bas1)))
+
+bas4 :: Dibujo Int
+bas4 = Basica 4
+
+bas5 :: Dibujo Int
+bas5 = Espejar(Espejar bas1)
+
 -- | Test de composición
 test_comp :: Bool
 test_comp =
@@ -56,6 +68,19 @@ test_orP =
     orfunc 13 == True &&
     orfunc 14 == True
 
+-- | Test esRot360
+test_esRot360 :: Bool
+test_esRot360 =
+    esRot360 (bas3) == True &&
+    esRot360 (bas1) == False
+
+-- | Test esFlip2
+test_esFlip2 :: Bool
+test_esFlip2 =
+    esFlip2 (bas1) == False &&
+    esFlip2 (bas3) == False &&
+    esFlip2 (bas5) == True
+
 {- |
     Función para correr los test
 
@@ -66,8 +91,13 @@ test =
     test_comp &&
     test_r180 &&
     test_andP &&
-    test_orP
+    test_orP &&
+    test_esRot360 &&
+    test_esFlip2
 
+{- |
+    Función que manda un mensaje según el resultado de los test
+-}
 test_str :: Bool-> String
-test_str b | b == True = "Esta todo bien (^-^)/"
-           | otherwise = "Algo salió mal (u_u)"
+test_str b | b == True = "Esta todo bien (^-^)/ ~naisu"
+           | otherwise = "Algo salio mal (u_u)"
