@@ -13,6 +13,7 @@ bas3 = Rot90(Rot90(Rot90(Rot90 bas1)))
 bas4 :: Dibujo Int
 bas4 = Basica 4
 
+-- | Para espejar
 bas5 :: Dibujo Int
 bas5 = Espejar(Espejar bas1)
 
