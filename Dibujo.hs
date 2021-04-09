@@ -1,11 +1,8 @@
 module Dibujo where
 
--- Definir el lenguaje.
+-- *NOTE: Tipo de datos para <Figura> y todas las funciones relacionadas
 
--- LINK http://aprendehaskell.es/main.html
--- LINK https://famaf.aulavirtual.unc.edu.ar/course/view.php?id=714
--- LINK https://wiki.uqbar.org/wiki/articles/data--definiendo-nuestros-tipos-en-haskell.html
--- LINK https://bitbucket.org/paradigmas-programacion-famaf/grupo10_lab01_2021/src/master/CONSIGNA.md
+-- Definir el lenguaje.
 
 -- ! NOTE Importante:
 -- Nuestro lenguaje está parametrizado sobre una colección de figuras básicas
@@ -28,7 +25,11 @@ module Dibujo where
 -- Definir el lenguaje como un tipo de datos: como no sabemos a priori qué
 -- Figuras básicas tendremos, nuestro tipo de Dibujos debe ser _polimórfico_.
 
-data Dibujo a = Vacia | Basica a | Rot90 (Dibujo a) | Espejar (Dibujo a) | Rot45 (Dibujo a)
+data Dibujo a = Vacia 
+              | Basica a
+              | Rot90 (Dibujo a)
+              | Espejar (Dibujo a)
+              | Rot45 (Dibujo a)
               | Apilar Int Int (Dibujo a) (Dibujo a)
               | Juntar Int Int (Dibujo a) (Dibujo a)
               | Encimar (Dibujo a) (Dibujo a)
@@ -232,10 +233,6 @@ orP p1 p2 x = p1 x || p2 x
 desc :: (a -> String) -> Dibujo a -> String
 desc f a = sem f descRot90 descRot45 descEsp descApi descJun descEnc a
 
--- !NOTE Revisar si es necesario tener esta by Ale
-descBas :: a -> String
-descBas a = "a"
-
 descRot90 :: String -> String
 descRot90 a = "rot" ++ "(" ++ a ++ ")"
 
@@ -256,8 +253,21 @@ descEnc a b = "enc" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 
 -- ! TODO Hacer después, no tenía ganas de hacerla ahora
 -- | Junta todas las Figuras básicas de un dibujo.
--- basicas :: Dibujo a -> [a]
--- basicas a = case a == "HOLA"
+basicas :: Dibujo a -> [a]
+basicas = sem basicasbas basicas2 basicas2 basicas2 basicas3 basicas3 basicas4
+
+basicasbas :: a -> [a]
+basicasbas a = [a]
+
+basicas2 :: a -> a
+basicas2 a = a
+
+basicas3 :: Int -> Int -> [a] -> [a] -> [a]
+basicas3 a b xs ys = xs ++ ys
+
+basicas4 :: [a] -> [a] -> [a]
+basicas4 xs ys = xs ++ ys
+
 
 -- ! TODO Definir los siguientes predicados (pueden hacer pattern-matching).
 -- !  Estos predicados indican una superfluocidad de operaciones (es
@@ -265,14 +275,27 @@ descEnc a b = "enc" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
 
 -- | Hay 4 rotaciones seguidas. Dibujo (a) -> Bool
 esRot360 :: Pred (Dibujo a)
-esRot360 (Rot90(Rot90(Rot90(Rot90 a)))) = True
-esRot360 (Rot45(Rot45(Rot45(Rot45(Rot45(Rot45(Rot45(Rot45 a)))))))) = True
-esRot360 otherwise = False
+esRot360 (Rot90 (Rot90 (Rot90 (Rot90 a)))) = True
+esRot360 Vacia = False
+esRot360 (Basica a) = False
+esRot360 (Rot90 a) = esRot360 a
+esRot360 (Espejar a) = esRot360 a
+esRot360 (Rot45 a) = esRot360 a
+esRot360 (Apilar x y a b) = esRot360 a || esRot360 b
+esRot360 (Juntar x y a b) = esRot360 a || esRot360 b
+esRot360 (Encimar a b) = esRot360 a || esRot360 b
 
 -- | Hay 2 espejados seguidos.
 esFlip2 :: Pred (Dibujo a)
 esFlip2 (Espejar(Espejar a)) = True
-esFlip2 otherwise = False
+esFlip2 Vacia = False
+esFlip2 (Basica a) = False
+esFlip2 (Rot90 a) = esFlip2 a
+esFlip2 (Espejar a) = esFlip2 a
+esFlip2 (Rot45 a) = esFlip2 a
+esFlip2 (Apilar x y a b) = esFlip2 a || esFlip2 b
+esFlip2 (Juntar x y a b) = esFlip2 a || esFlip2 b
+esFlip2 (Encimar a b) = esFlip2 a || esFlip2 b
 
 -- ! TODO Definición de función que aplica un predicado y devuelve 
 -- !  un error indicando fallo o una figura si no hay tal fallo.
@@ -284,5 +307,10 @@ data Superfluo = RotacionSuperflua | FlipSuperfluo
 
    sólo devuelve la figura si no hubo ningún error.
 -}
--- check :: Dibujo a -> Either [Superfluo] (Dibujo a)
--- check a Either s a
+
+check :: Dibujo a -> Either [Superfluo] (Dibujo a)
+check a | esRot360 a && esFlip2 a = Left [RotacionSuperflua, FlipSuperfluo]
+        | esRot360 a = Left [RotacionSuperflua]
+        | esFlip2 a = Left [FlipSuperfluo]
+        | otherwise = Right a
+

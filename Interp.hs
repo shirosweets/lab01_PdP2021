@@ -64,7 +64,63 @@ transf f d (xs,ys) a b c  = translate (fst a') (snd a') .
   where ang = radToDeg $ argV b
         a' = a V.+ half (b V.+ c)
 
-
 -- Claramente esto sólo funciona para el ejemplo!
-interp :: Output () -> Output (Dibujo ())
-interp f () = f ()
+
+--type FloatingPic = Vector -> Vector -> Vector -> Picture
+--type Output a = a -> FloatingPic
+
+--Operaciones con vectores : Suma -> V.+
+--                           Multiplicacion V.*
+--                           Negative V.negate
+--                           Resta V.-
+-- interp :: Output() -> Output (Dibujo ())
+-- interp f () = f ()
+
+interp :: Output a -> Output (Dibujo a)
+interp f (Basica a) = f a
+interp f (Rot90 a) = interpRot90 (interp f a)
+interp f (Rot45 a) = interpRot45 (interp f a)
+interp f (Espejar a) = interpEspejar (interp f a)
+interp f (Apilar x y a b) = interpApilar x y (interp f a) (interp f b)
+interp f (Juntar x y a b) = interpJuntar x y (interp f a) (interp f b)
+interp f (Encimar a b) = interpEncimar (interp f a) (interp f b)
+
+interpRot90 :: FloatingPic -> FloatingPic
+interpRot90 f x y z = f (x V.+ y) z (V.negate y)
+
+-- • Couldn't match expected type ‘Vector -> Picture’
+--               with actual type ‘Picture’
+-- • The function ‘f’ is applied to four arguments,
+--   but its type ‘Vector -> Vector -> Vector -> Picture’ has only three
+--   In the expression:
+--     f (half ((x V.+ (y V.+ z)))) half (y V.+ z) (half (z V.- y))
+--   In an equation for ‘interpRot45’:
+--       interpRot45 f x y z
+
+interpRot45 :: FloatingPic -> FloatingPic
+interpRot45 f x y z = f (half(x V.+ (y V.+ z))) (half (y V.+ z)) (half (z V.- y))
+
+interpEspejar :: FloatingPic -> FloatingPic
+interpEspejar f x y z = f (x V.+ y) (V.negate y) z
+
+
+interpApilar :: Int -> Int -> FloatingPic -> FloatingPic -> FloatingPic
+interpApilar n m f1 f2 x y z = pictures [f1 (x V.+ z') y (r V.* z),f2 x y z']
+      where l = toEnum n + 0.0
+            p = toEnum m + 0.0
+            r = l/(p+l)
+            r' = p/(p+l)
+            z' = r' V.* z
+
+-- apilar(n, m, f, g)(x, w, h) |  f(x + h', w, rh) ∪ g(x, w, h') con r' = n/(m+n), r=m/(m+n), h'=r'h
+
+interpJuntar :: Int -> Int -> FloatingPic -> FloatingPic -> FloatingPic
+interpJuntar n m f1 f2 x w h = pictures [f1 x w' h, f2 (x V.+ w') (r' V.* w) h]
+      where l = toEnum n + 0.0 
+            p = toEnum m + 0.0
+            r' = l/(p+l)
+            r = p/(p+l)
+            w' = r V.* w
+
+interpEncimar :: FloatingPic -> FloatingPic -> FloatingPic
+interpEncimar f1 f2 x y z = pictures[f1 x y z, f2 x y z]
