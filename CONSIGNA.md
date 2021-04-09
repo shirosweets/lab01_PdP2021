@@ -210,8 +210,8 @@ la función matemática _func_ (que se corresponde a uno de nuestros constructor
 | _rot45(f)(x, w, h)_        | _f(x+(w+h)/2, (w+h)/2, (h-w)/2)_       | ![rot45](img/rot45.png)     |
 | _espejar(f)(x, w, h)_      | _f(x+w, -w, h)_                        | ![rot](img/flip.png)        |
 | _encimar(f,g)(x, w, h)_    | _f(x, w, h) ∪ g(x, w, h)_              | ![encimar](img/encimar.png)        |
-| _juntar(n, m, f, g)(x, w, h) con n=m/2_ | _f(x, w', h) ∪ f'(x+w', r'*w, h) con r'=n/(m+n), r=m/(m+n), w'=r*w_   | ![juntar](img/juntar.png)   |
-| _apilar(f)(x, w, h)_       | _f(x + h', w, r*h) ∪ h(x, w, h') con r' = n/(m+n), r=m/(m+n), h'=r'*h_  | ![apilar](img/apilar.png)   |
+| _juntar(n, m, f, g)(x, w, h) | f(x, w', h) ∪ g(x+w', r'w, h) con r'=n/(m+n), r=m/(m+n), w'=rw_   | ![juntar](img/juntar.png)   |
+| _apilar(n, m, f, g)(x, w, h) |  f(x + h', w, rh) ∪ g(x, w, h') con r' = n/(m+n), r=m/(m+n), h'=r'h_  | ![apilar](img/apilar.png)   |
 
 Se recomienda fuertemente realizar dibujitos para comprender las operaciones.
 

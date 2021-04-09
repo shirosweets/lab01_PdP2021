@@ -1,0 +1,2 @@
+-- *NOTE: Si se copan y hacen otros diseños, que estén en el
+-- directorio Basica.
