@@ -1,31 +1,15 @@
 module Basica.Ejemplo where
+import Basica.Escher
 import Dibujo
 import Interp
 
--- 
+type Basica = Escher;
 
--- type Basica = ()
--- ejemplo :: Dibujo Basica
--- ejemplo = ()
 
--- interpBas :: Output Basica
--- interpBas () = trian1
-
-data Triangulo = Isosceles | Escaleno | Recto
-
-type Basica = Triangulo
 
 ejemplo :: Dibujo Basica
-ejemplo = Basica Isosceles
+ejemplo = Rot90 (Basica True)
 
--- basica -> FP
--- TODO: Crear constructor
--- TODO: Definir como funciona el constructor
+
 interpBas :: Output Basica
-interpBas Isosceles = trian1 -- :t trian1 :: FloatingPic
-
--- TODO: Ver que compile el constructor
--- violeta :: Triangulo -> Triangulo
--- violeta Escaleno = EscalenoVioleta
--- violeta Recto = RectoVioleta
--- violeta t = t
+interpBas True = trian1

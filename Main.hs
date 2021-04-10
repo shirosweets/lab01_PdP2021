@@ -24,7 +24,7 @@ ej x y = Conf {
 -- pantalla la figura de la misma de acuerdo a la interpretación para
 -- las figuras básicas. Permitimos una computación para poder leer
 -- archivos, tomar argumentos, etc.
-initial :: IO (Conf ()) -> IO ()
+initial :: IO (Conf E.Basica) -> IO ()
 initial cf = cf >>= \cfg ->
                   let x  = width cfg
                       y  = height cfg
@@ -34,4 +34,11 @@ initial cf = cf >>= \cfg ->
         grey = makeColorI 120 120 120 120
 
 win = InWindow "Nice Window" (200, 200) (0, 0)
-main = initial $ return (ej 100 100)
+main = initial $ return conf
+
+conf = Conf {
+                basic = E.interpBas
+              , fig = E.ejemplo
+              , width = 100
+              , height = 100
+              }
