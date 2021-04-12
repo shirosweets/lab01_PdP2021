@@ -28,6 +28,7 @@ grid n v sep l = pictures [ls,translate 0 (l*toEnum n) (rotate 90 ls)]
   where ls = pictures $ take (n+1) $ hlines v sep l
 
 -- figuras adaptables comunes
+
 trian1 :: FloatingPic
 trian1 a b c = line $ map (a V.+) [zero, half b V.+ c , b , zero]
 
@@ -64,8 +65,6 @@ transf f d (xs,ys) a b c  = translate (fst a') (snd a') .
   where ang = radToDeg $ argV b
         a' = a V.+ half (b V.+ c)
 
--- Claramente esto sólo funciona para el ejemplo!
-
 --type FloatingPic = Vector -> Vector -> Vector -> Picture
 --type Output a = a -> FloatingPic
 
@@ -77,6 +76,7 @@ transf f d (xs,ys) a b c  = translate (fst a') (snd a') .
 -- interp f () = f ()
 
 interp :: Output a -> Output (Dibujo a)
+interp f Vacia = vaciaPrima
 interp f (Basica a) = f a
 interp f (Rot90 a) = interpRot90 (interp f a)
 interp f (Rot45 a) = interpRot45 (interp f a)
@@ -85,17 +85,11 @@ interp f (Apilar x y a b) = interpApilar x y (interp f a) (interp f b)
 interp f (Juntar x y a b) = interpJuntar x y (interp f a) (interp f b)
 interp f (Encimar a b) = interpEncimar (interp f a) (interp f b)
 
+vaciaPrima :: FloatingPic
+vaciaPrima _ _ _ = blank
+
 interpRot90 :: FloatingPic -> FloatingPic
 interpRot90 f x y z = f (x V.+ y) z (V.negate y)
-
--- • Couldn't match expected type ‘Vector -> Picture’
---               with actual type ‘Picture’
--- • The function ‘f’ is applied to four arguments,
---   but its type ‘Vector -> Vector -> Vector -> Picture’ has only three
---   In the expression:
---     f (half ((x V.+ (y V.+ z)))) half (y V.+ z) (half (z V.- y))
---   In an equation for ‘interpRot45’:
---       interpRot45 f x y z
 
 interpRot45 :: FloatingPic -> FloatingPic
 interpRot45 f x y z = f (half(x V.+ (y V.+ z))) (half (y V.+ z)) (half (z V.- y))
@@ -111,8 +105,6 @@ interpApilar n m f1 f2 x y z = pictures [f1 (x V.+ z') y (r V.* z),f2 x y z']
             r = l/(p+l)
             r' = p/(p+l)
             z' = r' V.* z
-
--- apilar(n, m, f, g)(x, w, h) |  f(x + h', w, rh) ∪ g(x, w, h') con r' = n/(m+n), r=m/(m+n), h'=r'h
 
 interpJuntar :: Int -> Int -> FloatingPic -> FloatingPic -> FloatingPic
 interpJuntar n m f1 f2 x w h = pictures [f1 x w' h, f2 (x V.+ w') (r' V.* w) h]

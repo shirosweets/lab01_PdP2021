@@ -124,7 +124,7 @@ encimar4 a = (^^^) a ((^^^) ((^^^) (rot90 a) (r180 a)) (r270 a))
 
 -- | Cuadrado con la misma Figura rotada i * 90, para i ∈ {0, ..., 3}. No confundir con encimar4!
 ciclar :: Dibujo a -> Dibujo a
-ciclar a = (.-.) ((///) a (rot90 a)) ((///) (r180 a) (r270 a))
+ciclar a = (.-.) ((///) a (r270 a)) ((///) (rot90 a) (r180 a) )
 
 -- ! TODO  Definir esquemas para la manipulación de Dibujos básicas.
 

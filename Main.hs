@@ -33,12 +33,12 @@ initial cf = cf >>= \cfg ->
   where withGrid p = pictures [p, color grey $ grid 10 (0,0) 100 10]
         grey = makeColorI 120 120 120 120
 
-win = InWindow "Nice Window" (200, 200) (0, 0)
+win = InWindow "Nice Window" (500, 500) (0, 0)
 main = initial $ return conf
 
 conf = Conf {
                 basic = E.interpBas
               , fig = E.ejemplo
-              , width = 100
-              , height = 100
+              , width = 200
+              , height = 200
               }
