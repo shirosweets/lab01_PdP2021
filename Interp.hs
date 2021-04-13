@@ -76,7 +76,7 @@ transf f d (xs,ys) a b c  = translate (fst a') (snd a') .
 -- interp f () = f ()
 
 interp :: Output a -> Output (Dibujo a)
-interp f Vacia = vaciaPrima
+interp f Vacia = simple blank
 interp f (Basica a) = f a
 interp f (Rot90 a) = interpRot90 (interp f a)
 interp f (Rot45 a) = interpRot45 (interp f a)
@@ -86,7 +86,7 @@ interp f (Juntar x y a b) = interpJuntar x y (interp f a) (interp f b)
 interp f (Encimar a b) = interpEncimar (interp f a) (interp f b)
 
 vaciaPrima :: FloatingPic
-vaciaPrima _ _ _ = blank
+vaciaPrima  = simple blank
 
 interpRot90 :: FloatingPic -> FloatingPic
 interpRot90 f x y z = f (x V.+ y) z (V.negate y)

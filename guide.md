@@ -11,8 +11,8 @@
 - [Info para leer](#info-para-leer)
 
 ## Información
-Laboratorio Nº 1<p/>
-Grupo: 10<p/>
+Laboratorio Nº 1</p>
+Grupo: 10</p>
 Integrantes:
 - Silva, Agustín
 - Spitale, Alejandro
@@ -36,6 +36,13 @@ Basica/Extra.hs  # Si se copan y hacen otros diseños, que estén en el
                  # directorio Basica.
 Main.hs          # Definición del programa, configuración de parámetros.
 ```
+## ¿Cómo compilar el Main.hs?
+1) Escribir el ejemplo en `Ejemplo.hs`</p>
+2) Correr:</p>
+`ghci`</p>
+`:l Main.hs`</p>
+`main`
+
 
 ## ¿Cómo añadir las funciones al test?
 1) Dirigirse al archivo `Test.hs`
@@ -43,19 +50,19 @@ Main.hs          # Definición del programa, configuración de parámetros.
 3) Añadir las funciones respetando los `input` y checkeando su `output`. 
 
 ## ¿Cómo probar la compilación?
-`ghci`<p/>
-`:l Test.hs`<p/>
-Para recargar la compilación:<p/>
+`ghci`</p>
+`:l Test.hs`</p>
+Para recargar la compilación:</p>
 `:r`
 
 ## ¿Cómo correr el test?
-`ghci`<p/>
-`:l Test.hs`<p/>
-`test_str test`<p/>
+`ghci`</p>
+`:l Test.hs`</p>
+`test_str test`</p>
 ## ¿Cómo checkear el tipo?
-`ghci`<p/>
-`:l Test.hs`<p/>
-`:t <funcion>`<p/>
+`ghci`</p>
+`:l Test.hs`</p>
+`:t <funcion>`</p>
 
 Ejemplo:</p>
 `:t orP` -> `orP :: Pred a -> Pred a -> Pred a`

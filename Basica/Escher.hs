@@ -54,7 +54,7 @@ noneto p q r s t u v w x = Apilar 1 2
 
 -- escher(n, f) = noneto(…), donde en p va esquina(n, f) y en Q va lado(n, f),
 -- el resto de las letras deben resolverlas ustedes.
--- El dibujo de Escher:
+-- El dibujo de Escher: squarelimit
 escher :: Int -> Escher -> Dibujo Escher
 escher n p = noneto (esquina n (Basica p))
                 (lado n (Basica p))

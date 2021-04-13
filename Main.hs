@@ -28,7 +28,7 @@ initial :: IO (Conf E.Basica) -> IO ()
 initial cf = cf >>= \cfg ->
                   let x  = width cfg
                       y  = height cfg
-                  in display win white $ interp (basic cfg) (fig cfg) (0,0) (x,0) (0,y)
+                  in display win white . withGrid $ interp (basic cfg) (fig cfg) (0,0) (x,0) (0,y)
                   -- in display win white . withGrid $ interp (basic cfg) (fig cfg) (0,0) (x,0) (0,y)
   where withGrid p = pictures [p, color grey $ grid 10 (0,0) 100 10]
         grey = makeColorI 120 120 120 120
@@ -37,8 +37,8 @@ win = InWindow "Nice Window" (500, 500) (0, 0)
 main = initial $ return conf
 
 conf = Conf {
-                basic = E.interpBas
+              basic = E.interpBas
               , fig = E.ejemplo
               , width = 200
               , height = 200
-              }
+            }
