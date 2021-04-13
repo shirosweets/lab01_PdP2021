@@ -27,8 +27,8 @@ type Escher = Bool
 
 -- El dibujoU.
 dibujoU :: Dibujo Escher -> Dibujo Escher
-dibujoU p = Encimar (Encimar p (Rot90 p) ) (Encimar (Rot90 (Rot90 p)) (Rot90 (Rot90 (Rot90 p))) )
-        where p = Espejar (Rot45 p)
+dibujoU p = Encimar (Encimar p1 (Rot90 p1)) (Encimar (Rot90 (Rot90 p1)) (Rot90 (Rot90 (Rot90 p1))) )
+        where p1 = Espejar (Rot45 p)
 
 -- El dibujo t.
 dibujoT :: Dibujo Escher -> Dibujo Escher
@@ -38,15 +38,14 @@ dibujoT t = Encimar t (Encimar t1 t2)
 
 -- Esquina con nivel de detalle en base a la figura p.
 esquina :: Int -> Dibujo Escher -> Dibujo Escher
-esquina 0 _ = Vacia
+esquina 1 p = cuarteto Vacia Vacia Vacia (dibujoU p)
 esquina n p = cuarteto (esquina (n-1) p) (lado (n-1) p) (Rot90 (lado (n-1) p)) (dibujoU p)
 
 -- Lado con nivel de detalle.
 lado :: Int -> Dibujo Escher -> Dibujo Escher
-lado 0 _ = Vacia
+lado 1 p = cuarteto Vacia Vacia (Rot90 p) p
 lado n p = cuarteto (lado (n-1) p) (lado (n-1) p) (Rot90 p) p
 
--- por suerte no tenemos que poner el tipo!
 -- noneto p q r s t u v w x = undefined
 noneto p q r s t u v w x = Apilar 1 2
                         (Juntar 1 2 p (Juntar 1 1 q r))
