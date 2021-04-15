@@ -88,11 +88,11 @@ r180 a = comp rot90 2 a
 r270 :: Dibujo a -> Dibujo a
 r270 a = comp rot90 3 a
 
--- | Pone una Figura sobre la otra, ambas ocupan el mismo espejaracio. (apilar)
+-- | Pone una Figura sobre la otra, ambas ocupan el mismo espacio. (apilar)
 (.-.) :: Dibujo a -> Dibujo a -> Dibujo a
 (.-.) a b = apilar 100 100 a b
 
--- | Pone una Figura al lado de la otra, ambas ocupan el mismo espejaracio. (juntar)
+-- | Pone una Figura al lado de la otra, ambas ocupan el mismo espacio. (juntar)
 (///) :: Dibujo a -> Dibujo a -> Dibujo a
 (///) a b = juntar 100 100 a b
 
@@ -100,7 +100,7 @@ r270 a = comp rot90 3 a
 (^^^) :: Dibujo a -> Dibujo a -> Dibujo a
 (^^^) a b = encimar a b
 
--- | Dadas cuatro Dibujos las ubica en los cuatro cuadrantes.
+-- | Dadas cuatro Figuras las ubica en los cuatro cuadrantes.
 cuarteto :: Dibujo a -> Dibujo a -> Dibujo a -> Dibujo a -> Dibujo a
 cuarteto a b c d = (.-.) ((///) a b) ((///) c d)
 -- Inicial
@@ -124,7 +124,7 @@ encimar4 a = (^^^) a ((^^^) ((^^^) (rot90 a) (r180 a)) (r270 a))
 
 -- | Cuadrado con la misma Figura rotada i * 90, para i ∈ {0, ..., 3}. No confundir con encimar4!
 ciclar :: Dibujo a -> Dibujo a
-ciclar a = (.-.) ((///) a (r270 a)) ((///) (rot90 a) (r180 a) )
+ciclar a = (.-.) ((///) a (r270 a)) ((///) (rot90 a) (r180 a)) 
 
 -- ! TODO  Definir esquemas para la manipulación de Dibujos básicas.
 
@@ -158,8 +158,8 @@ sem :: (a -> b) -> (b -> b) -> (b -> b) -> (b -> b) ->
        Dibujo a -> b
 sem bas r90 esp r45 api jun enc (Basica a) = bas a
 sem bas r90 esp r45 api jun enc (Rot90 a) = r90 (sem bas r90 esp r45 api jun enc a)
-sem bas r90 esp r45 api jun enc (Rot45 a) = r45 (sem bas r90 esp r45 api jun enc a)
 sem bas r90 esp r45 api jun enc (Espejar a) = esp (sem bas r90 esp r45 api jun enc a)
+sem bas r90 esp r45 api jun enc (Rot45 a) = r45 (sem bas r90 esp r45 api jun enc a)
 sem bas r90 esp r45 api jun enc (Apilar x y a b) = api x y (sem bas r90 esp r45 api jun enc a) (sem bas r90 esp r45 api jun enc b)
 sem bas r90 esp r45 api jun enc (Juntar x y a b) = jun x y (sem bas r90 esp r45 api jun enc a) (sem bas r90 esp r45 api jun enc b)
 sem bas r90 esp r45 api jun enc (Encimar a b) = enc (sem bas r90 esp r45 api jun enc a) (sem bas r90 esp r45 api jun enc b)
@@ -178,17 +178,16 @@ type Pred a = a -> Bool
 
 {- |  
    Dado un predicado sobre básicas, cambiar todas las que satisfacen
-
    el predicado por la figura básica indicada por el segundo argumento.
 -}
 cambiar :: Pred a -> a -> Dibujo a -> Dibujo a
 cambiar p a b = mapDib (fun_cambia p a) b
 
 fun_cambia :: Pred a -> a -> a -> a
-fun_cambia p a b | p a = b 
+fun_cambia p a b | p a = b
                  | otherwise = a
 
--- | Alguna básica satisface el predicado.
+-- | Alguna básica satisface el predicado.   NOTE anyDib testeada
 anyDib :: Pred a -> Dibujo a -> Bool
 anyDib p a = sem p bool_any_1 bool_any_1 bool_any_1 bool_any_2 bool_any_2 bool_any_3 a
 
@@ -201,7 +200,7 @@ bool_any_2 _ _ x y = x || y
 bool_any_3 :: Bool -> Bool -> Bool
 bool_any_3 x y = x || y
 
--- | Todas las básicas satisfacen el predicado.
+-- | Todas las básicas satisfacen el predicado. NOTE allDib testeada
 allDib :: Pred a -> Dibujo a -> Bool
 allDib p a = sem p bool_all_1 bool_all_1 bool_all_1 bool_all_2 bool_all_2 bool_all_3 a
 
@@ -214,11 +213,11 @@ bool_all_2 _ _ x y = x && y
 bool_all_3 :: Bool -> Bool -> Bool
 bool_all_3 x y = x && y
 
--- | Los dos predicados se cumplen para el elemento recibido.
+-- | Los dos predicados se cumplen para el elemento recibido. NOTE andP testeada
 andP :: Pred a -> Pred a -> Pred a
 andP p1 p2 x = p1 x && p2 x
 
--- | Algún predicado se cumple para el elemento recibido.
+-- | Algún predicado se cumple para el elemento recibido.     NOTE orP testeada
 orP :: Pred a -> Pred a -> Pred a
 orP p1 p2 x = p1 x || p2 x
 
@@ -228,31 +227,29 @@ orP p1 p2 x = p1 x || p2 x
 --   desc (const "b") (Apilar n m (Basica b) (Basica b)) = "api n m (b) (b)"
 -- La descripción de cada constructor son sus tres primeros
 -- símbolos en minúscula, excepto `Rot45` al que se le agrega el `45`.
-
--- TODO: Realizar el test necesario en el archivo Test.hs @Alguien
+-- NOTE desc testeada
 desc :: (a -> String) -> Dibujo a -> String
-desc f a = sem f descRot90 descRot45 descEsp descApi descJun descEnc a
+desc f a = sem f descRot90 descEsp descRot45 descApi descJun descEnc a
 
 descRot90 :: String -> String
-descRot90 a = "rot" ++ "(" ++ a ++ ")"
-
-descRot45 :: String -> String
-descRot45 a = "rot45" ++ "(" ++ a ++ ")"
+descRot90 a = "rot" ++ " " ++ "(" ++ a ++ ")"
 
 descEsp :: String -> String
-descEsp a = "esp" ++ "(" ++ a ++ ")"
+descEsp a = "esp" ++ " " ++ "(" ++ a ++ ")"
+
+descRot45 :: String -> String
+descRot45 a = "rot45" ++ " " ++ "(" ++ a ++ ")"
 
 descApi :: Int -> Int -> String -> String -> String
-descApi x y a b = "api" ++ "x" ++ "y" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
+descApi x y a b = "api" ++ " " ++ "x" ++ " " ++ "y" ++ " " ++ "(" ++ a ++ ")" ++ " " ++ "(" ++ b ++ ")"
 
 descJun :: Int -> Int -> String -> String -> String
-descJun x y a b = "jun" ++ "x" ++ "y" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
+descJun x y a b = "jun" ++ " " ++ "x" ++ " " ++ "y" ++ " " ++ "(" ++ a ++ ")" ++ " " ++ "(" ++ b ++ ")"
 
 descEnc :: String -> String -> String
-descEnc a b = "enc" ++ "(" ++ a ++ ")" ++ "(" ++ b ++ ")"
+descEnc a b = "enc" ++ " " ++ "(" ++ a ++ ")" ++ " " ++ "(" ++ b ++ ")"
 
--- ! TODO Hacer después, no tenía ganas de hacerla ahora
--- | Junta todas las Figuras básicas de un dibujo.
+-- | Junta todas las Figuras básicas de un dibujo.    NOTE Basicas testeada
 basicas :: Dibujo a -> [a]
 basicas = sem basicasbas basicas2 basicas2 basicas2 basicas3 basicas3 basicas4
 
@@ -273,7 +270,7 @@ basicas4 xs ys = xs ++ ys
 -- !  Estos predicados indican una superfluocidad de operaciones (es
 -- !  decir, cambian para no cambiar nada).
 
--- | Hay 4 rotaciones seguidas. Dibujo (a) -> Bool
+-- | Hay 4 rotaciones seguidas. Dibujo (a) -> Bool NOTE esRot360 testeada
 esRot360 :: Pred (Dibujo a)
 esRot360 (Rot90 (Rot90 (Rot90 (Rot90 a)))) = True
 esRot360 Vacia = False
@@ -285,7 +282,7 @@ esRot360 (Apilar x y a b) = esRot360 a || esRot360 b
 esRot360 (Juntar x y a b) = esRot360 a || esRot360 b
 esRot360 (Encimar a b) = esRot360 a || esRot360 b
 
--- | Hay 2 espejados seguidos.
+-- | Hay 2 espejados seguidos. NOTE esFlip2 testeada
 esFlip2 :: Pred (Dibujo a)
 esFlip2 (Espejar(Espejar a)) = True
 esFlip2 Vacia = False
@@ -301,13 +298,13 @@ esFlip2 (Encimar a b) = esFlip2 a || esFlip2 b
 -- !  un error indicando fallo o una figura si no hay tal fallo.
 
 data Superfluo = RotacionSuperflua | FlipSuperfluo
-
+               deriving Show
 {- |
    Aplica todos los chequeos y acumula todos los errores, y
 
    sólo devuelve la figura si no hubo ningún error.
 -}
-
+-- NOTE check testeada
 check :: Dibujo a -> Either [Superfluo] (Dibujo a)
 check a | esRot360 a && esFlip2 a = Left [RotacionSuperflua, FlipSuperfluo]
         | esRot360 a = Left [RotacionSuperflua]

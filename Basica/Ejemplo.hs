@@ -6,7 +6,7 @@ import Interp
 type Basica = Escher
 
 ejemplo :: Dibujo Basica
-ejemplo = dibujoT (Basica True)
+ejemplo = escher 2 True
 
 interpBas :: Output Basica
 interpBas True = trian2 -- se puede usar fShape, trian1... (en Inter.hs)
@@ -17,7 +17,7 @@ interpBas True = trian2 -- se puede usar fShape, trian1... (en Inter.hs)
 --interpBas True = trian1
 
 -- NOTE t1 AZUL
--- ejemplo = Espejar (Rot45 (Basica True))
+--ejemplo = Espejar (Rot45 (Basica True))
 
 -- NOTE t1 ROJO (t2)
 -- ejemplo = Rot90(Rot90(Rot90 (Espejar (Rot45 (Basica True))))) --  (Rot90 
@@ -28,7 +28,11 @@ interpBas True = trian2 -- se puede usar fShape, trian1... (en Inter.hs)
 --          t2 = Rot90(Rot90(Rot90 t1))
 
 -- NOTE Dibujo T consigna
--- ejemplo = Encimar (Basica True) (Rot45 (Basica True)
+dibT :: Dibujo Basica 
+dibT = dibujoT (Basica True)
+
+interpDibT :: Output Basica
+interpDibT True = trian2
 --ejemplo = Encimar (Basica True) (Encimar (Apilar 100 100 (Rot45 (Basica True)) (r270(Rot45 (Basica True)))))
 
 -- NOTE Dibujo U

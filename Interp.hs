@@ -89,23 +89,23 @@ interpRot90 :: FloatingPic -> FloatingPic
 interpRot90 f x y z = f (x V.+ y) z (V.negate y)
 
 interpRot45 :: FloatingPic -> FloatingPic
-interpRot45 f x y z = f (half(x V.+ (y V.+ z))) (half (y V.+ z)) (half (z V.- y))
+interpRot45 f x y z = f (x V.+ half(y V.+ z)) (half (y V.+ z)) (half (z V.- y))
 
 interpEspejar :: FloatingPic -> FloatingPic
 interpEspejar f x y z = f (x V.+ y) (V.negate y) z
 
 interpApilar :: Int -> Int -> FloatingPic -> FloatingPic -> FloatingPic
 interpApilar n m f1 f2 x y z = pictures [f1 (x V.+ z') y (r V.* z),f2 x y z']
-      where l = toFloat n
-            p = toFloat m
+      where l = toFloat m
+            p = toFloat n
             r = p/(p+l)
             r' = l/(p+l)
             z' = r' V.* z
 
 interpJuntar :: Int -> Int -> FloatingPic -> FloatingPic -> FloatingPic
 interpJuntar n m f1 f2 x w h = pictures [f1 x w' h, f2 (x V.+ w') (r' V.* w) h]
-      where l = toFloat n 
-            p = toFloat m
+      where l = toFloat m
+            p = toFloat n
             r' = l/(p+l)
             r = p/(p+l)
             w' = r V.* w

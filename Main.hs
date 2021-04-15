@@ -5,6 +5,7 @@ import Graphics.UI.GLUT.Begin
 import Dibujo
 import Interp
 import qualified Basica.Ejemplo as E
+import qualified Basica.Extra as Es
 
 data Conf a = Conf {
     basic :: Output a
@@ -13,7 +14,7 @@ data Conf a = Conf {
   , height :: Float
   }
 
-ej x y = Conf {
+escher x y = Conf {
                 basic = E.interpBas
               , fig = E.ejemplo
               , width = x
@@ -28,9 +29,12 @@ initial :: IO (Conf E.Basica) -> IO ()
 initial cf = cf >>= \cfg ->
                   let x  = width cfg
                       y  = height cfg
-                  in display win white . withGrid $ interp (basic cfg) (fig cfg) (0,0) (x,0) (0,y)
+                  in display win white $ interp (basic cfg) (fig cfg) (0,0) (x,0) (0,y)
+                  --in display win white . withGrid $ interp (basic cfg) (fig cfg) (0,0) (x,0) (0,y)
   where withGrid p = pictures [p, color grey $ grid 10 (0,0) 100 10]
         grey = makeColorI 120 120 120 120
 
-win = InWindow "Grafico de Escher" (200, 200) (0, 0)
-main = initial $ return (ej 100 100)
+win = InWindow "Grafico de Escher" (400, 400) (0, 0)
+main = initial $ return (escher 100 100)
+escherF = initial $ return (Conf {basic = Es.interpDib, fig = Es.escherF, width = 100, height = 100})
+dibT = initial $ return (Conf {basic = E.interpDibT, fig = E.dibT, width = 100, height = 100})

@@ -30,6 +30,10 @@ dibujoU :: Dibujo Escher -> Dibujo Escher
 dibujoU p = Encimar (Encimar p1 (Rot90 p1)) (Encimar (Rot90 (Rot90 p1)) (Rot90 (Rot90 (Rot90 p1))) )
         where p1 = Espejar (Rot45 p)
 
+-- El dibujoU de la consigna (profes)
+--dibujoUConsigna :: Dibujo Escher -> Dibujo Escher
+--dibujoUConsigna p = ciclar p
+
 -- El dibujo t.
 dibujoT :: Dibujo Escher -> Dibujo Escher
 dibujoT t = Encimar t (Encimar t1 t2)  
@@ -38,15 +42,16 @@ dibujoT t = Encimar t (Encimar t1 t2)
 
 -- Esquina con nivel de detalle en base a la figura p.
 esquina :: Int -> Dibujo Escher -> Dibujo Escher
-esquina 1 p = cuarteto Vacia Vacia Vacia (dibujoU p)
+--esquina 1 p = cuarteto Vacia Vacia Vacia (dibujoU p)
+esquina 0 _ = Vacia 
 esquina n p = cuarteto (esquina (n-1) p) (lado (n-1) p) (Rot90 (lado (n-1) p)) (dibujoU p)
 
 -- Lado con nivel de detalle.
 lado :: Int -> Dibujo Escher -> Dibujo Escher
-lado 1 p = cuarteto Vacia Vacia (Rot90 p) p
-lado n p = cuarteto (lado (n-1) p) (lado (n-1) p) (Rot90 p) p
+lado 0 _ = Vacia
+lado n p = cuarteto (lado (n-1) p) (lado (n-1) p) (Rot90 (dibujoT p)) (dibujoT p)
 
--- noneto p q r s t u v w x = undefined
+--noneto p q r s t u v w x = undefined
 noneto p q r s t u v w x = Apilar 1 2
                         (Juntar 1 2 p (Juntar 1 1 q r))
                         (Apilar 1 1 (Juntar 1 2 s (Juntar 1 1 t u)) (Juntar 1 2 v (Juntar 1 1 w x)))
@@ -64,4 +69,3 @@ escher n p = noneto (esquina n (Basica p))
                 (Rot90 (esquina n (Basica p)))
                 (Rot90(Rot90(lado n (Basica p))))
                 (Rot90(Rot90(esquina n (Basica p))))
-
