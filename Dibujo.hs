@@ -184,8 +184,8 @@ cambiar :: Pred a -> a -> Dibujo a -> Dibujo a
 cambiar p a b = mapDib (fun_cambia p a) b
 
 fun_cambia :: Pred a -> a -> a -> a
-fun_cambia p a b | p a = b
-                 | otherwise = a
+fun_cambia p a b | p b = a
+                 | otherwise = b
 
 -- | Alguna básica satisface el predicado.   NOTE anyDib testeada
 anyDib :: Pred a -> Dibujo a -> Bool

@@ -30,7 +30,7 @@ esRecto :: Pred Triangulo
 esRecto a = a == Recto
 
 d :: Dibujo Triangulo
-d = Encimar (Basica Recto) (Basica Isoceles)
+d = Encimar (Encimar (Apilar 1 1 (Rot45(Basica Recto)) (Basica Recto) ) (Juntar 1 1 (Basica IsocelesVioleta) (Basica Isoceles)) ) (Encimar (Basica Recto) (Basica EscalenoVioleta))
 
 string :: Triangulo -> String
 string Recto = "Recto"
