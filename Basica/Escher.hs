@@ -21,9 +21,8 @@ https://cs.famaf.unc.edu.ar/~mpagano/henderson-funcgeo2.pdf
 
 -}
 
-
 --type Floatingpic = Vector -> Vector -> Vector -> picture
-type Escher = Bool
+type Escher = Int
 
 -- El dibujoU.
 dibujoU :: Dibujo Escher -> Dibujo Escher
@@ -56,8 +55,6 @@ noneto p q r s t u v w x = Apilar 1 2
                         (Juntar 1 2 p (Juntar 1 1 q r))
                         (Apilar 1 1 (Juntar 1 2 s (Juntar 1 1 t u)) (Juntar 1 2 v (Juntar 1 1 w x)))
 
--- escher(n, f) = noneto(…), donde en p va esquina(n, f) y en Q va lado(n, f),
--- el resto de las letras deben resolverlas ustedes.
 -- El dibujo de Escher: squarelimit
 escher :: Int -> Escher -> Dibujo Escher
 escher n p = noneto (esquina n (Basica p))

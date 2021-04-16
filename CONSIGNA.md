@@ -353,7 +353,7 @@ de precisión y claridad que puedan.
     Justificar. Advertencia: Si hacen una buena partición, se las chorearemos
     para el año que viene.
 
- 2. ¿Por qué las funciones básicas no están incluidas en la definición del
+ 2. ¿Por qué las figuras básicas no están incluidas en la definición del
     lenguaje, y en vez es un parámetro del tipo?
 	
  3. Explique cómo hace `Interp.grid` para construir la grilla, explicando cada
@@ -429,6 +429,7 @@ nosotres qué hacer o que lo más fácil sea bajar e instalar
 
 
 #### Recursos sobre Haskell ####
+
 
 * [Learn you a Haskell...](http://learnyouahaskell.com/) 
 * [Aprende Haskell... (traducción del anterior)](http://aprendehaskell.es/main.html).

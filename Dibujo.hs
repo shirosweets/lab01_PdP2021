@@ -35,43 +35,6 @@ data Dibujo a = Vacia
               | Encimar (Dibujo a) (Dibujo a)
               deriving (Eq, Show)
 
--- Constructores --
-
-vacia :: a -> Dibujo a
-vacia x = Vacia
-
-basica :: a -> Dibujo a
-basica x = Basica x
-
--- | Gira 90º
-rot90 :: Dibujo a -> Dibujo a
-rot90 x = Rot90 x
-
-espejar :: Dibujo a -> Dibujo a
-espejar x = Espejar x
-
--- | Gira 45º
-rot45 :: Dibujo a -> Dibujo a
-rot45 x = Rot45 x
-
--- Poner una encima de la otra ocupando el mismo espejaracio --
--- `Apilar` pone la primer figura encima de la segunda
--- estas dos instrucciones toman un par de enteros que indican la proporción del
--- tamaño de la primera y la segunda figura.
-apilar :: Int -> Int -> Dibujo a -> Dibujo a -> Dibujo a
-apilar x y a b = Apilar x y a b
-
--- Pone una al lado de la otra --
--- `Juntar` las coloca al lado;
--- estas dos instrucciones toman un par de enteros que indican la proporción del
--- tamaño de la primera y la segunda figura.
-juntar :: Int -> Int -> Dibujo a -> Dibujo a -> Dibujo a
-juntar x y a b = Juntar x y a b
-
--- | Pone una encima de la otra y no ocupan el mismo espejaracio
-encimar :: Dibujo a -> Dibujo a -> Dibujo a
-encimar a b = Encimar a b
-
 -- ! TODO Definir los siguientes combinadores
 -- * NOTE 1 Importante: todas estas serán utilizadas para los demás ejercicios
 -- * es necesario por lo tanto hacerlos para casos b y n+1
@@ -83,22 +46,22 @@ comp f n x = comp f (n-1) (f(x))
 
 -- | Rotaciones de múltiplos de 90.
 r180 :: Dibujo a -> Dibujo a
-r180 a = comp rot90 2 a
+r180 a = comp Rot90 2 a
 
 r270 :: Dibujo a -> Dibujo a
-r270 a = comp rot90 3 a
+r270 a = comp Rot90 3 a
 
 -- | Pone una Figura sobre la otra, ambas ocupan el mismo espacio. (apilar)
 (.-.) :: Dibujo a -> Dibujo a -> Dibujo a
-(.-.) a b = apilar 100 100 a b
+(.-.) a b = Apilar 100 100 a b
 
 -- | Pone una Figura al lado de la otra, ambas ocupan el mismo espacio. (juntar)
 (///) :: Dibujo a -> Dibujo a -> Dibujo a
-(///) a b = juntar 100 100 a b
+(///) a b = Juntar 100 100 a b
 
--- | Superpone una Figura con otra. (encimar)
+-- | Superpone una Figura con otra. (Encimar)
 (^^^) :: Dibujo a -> Dibujo a -> Dibujo a
-(^^^) a b = encimar a b
+(^^^) a b = Encimar a b
 
 -- | Dadas cuatro Figuras las ubica en los cuatro cuadrantes.
 cuarteto :: Dibujo a -> Dibujo a -> Dibujo a -> Dibujo a -> Dibujo a
@@ -116,7 +79,7 @@ cuarteto a b c d = (.-.) ((///) a b) ((///) c d)
 
 -- | Una Figura repetida con las cuatro rotaciones, superpuestas.
 encimar4 :: Dibujo a -> Dibujo a
-encimar4 a = (^^^) a ((^^^) ((^^^) (rot90 a) (r180 a)) (r270 a))
+encimar4 a = (^^^) a ((^^^) ((^^^) (Rot90 a) (r180 a)) (r270 a))
 -- Inicial
 -- [ a | a | a | a ]
 -- * Final
@@ -124,7 +87,7 @@ encimar4 a = (^^^) a ((^^^) ((^^^) (rot90 a) (r180 a)) (r270 a))
 
 -- | Cuadrado con la misma Figura rotada i * 90, para i ∈ {0, ..., 3}. No confundir con encimar4!
 ciclar :: Dibujo a -> Dibujo a
-ciclar a = (.-.) ((///) a (r270 a)) ((///) (rot90 a) (r180 a)) 
+ciclar a = (.-.) ((///) a (r270 a)) ((///) (Rot90 a) (r180 a)) 
 
 -- ! TODO  Definir esquemas para la manipulación de Dibujos básicas.
 
@@ -137,12 +100,12 @@ pureDib a = Basica a
 mapDib :: (a -> b) -> Dibujo a -> Dibujo b
 mapDib f Vacia = Vacia
 mapDib f (Basica a) = pureDib (f a)
-mapDib f (Rot90 a) = rot90 (mapDib f a)
-mapDib f (Espejar a) = espejar (mapDib f a)
-mapDib f (Rot45 a) = rot45 (mapDib f a)
-mapDib f (Apilar x y a b) = apilar x y (mapDib f a) (mapDib f b)
-mapDib f (Juntar x y a b) = juntar x y (mapDib f a) (mapDib f b)
-mapDib f (Encimar a b)  = encimar (mapDib f a) (mapDib f b)
+mapDib f (Rot90 a) = Rot90 (mapDib f a)
+mapDib f (Espejar a) = Espejar (mapDib f a)
+mapDib f (Rot45 a) = Rot45 (mapDib f a)
+mapDib f (Apilar x y a b) = Apilar x y (mapDib f a) (mapDib f b)
+mapDib f (Juntar x y a b) = Juntar x y (mapDib f a) (mapDib f b)
+mapDib f (Encimar a b)  = Encimar (mapDib f a) (mapDib f b)
 
 
 -- Verificar que las operaciones satisfagan:
@@ -228,6 +191,7 @@ orP p1 p2 x = p1 x || p2 x
 -- La descripción de cada constructor son sus tres primeros
 -- símbolos en minúscula, excepto `Rot45` al que se le agrega el `45`.
 -- NOTE desc testeada
+
 desc :: (a -> String) -> Dibujo a -> String
 desc f a = sem f descRot90 descEsp descRot45 descApi descJun descEnc a
 
@@ -250,6 +214,7 @@ descEnc :: String -> String -> String
 descEnc a b = "enc" ++ " " ++ "(" ++ a ++ ")" ++ " " ++ "(" ++ b ++ ")"
 
 -- | Junta todas las Figuras básicas de un dibujo.    NOTE Basicas testeada
+
 basicas :: Dibujo a -> [a]
 basicas = sem basicasbas basicas2 basicas2 basicas2 basicas3 basicas3 basicas4
 
@@ -310,4 +275,3 @@ check a | esRot360 a && esFlip2 a = Left [RotacionSuperflua, FlipSuperfluo]
         | esRot360 a = Left [RotacionSuperflua]
         | esFlip2 a = Left [FlipSuperfluo]
         | otherwise = Right a
-
